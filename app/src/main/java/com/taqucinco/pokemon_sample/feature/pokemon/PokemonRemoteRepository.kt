@@ -1,5 +1,7 @@
 package com.taqucinco.pokemon_sample.feature.pokemon
 
+import com.taqucinco.pokemon_sample.feature.pokemon.PokemonApi
+
 interface PokemonRemoteRepository {
     /**
      * ポケモンの取得可能なリストを取得する

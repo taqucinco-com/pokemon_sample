@@ -5,8 +5,8 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.produceState
 import com.taqucinco.pokemon_sample.feature.analytics.FirebaseAnalyticsEvent
 import com.taqucinco.pokemon_sample.feature.analytics.FirebaseAnalyticsServable
-import com.taqucinco.pokemon_sample.feature.pokemon.PokemonLocalRepository
 import com.taqucinco.pokemon_sample.feature.pokemon.PokemonResource
+import com.taqucinco.pokemon_sample.feature.pokemon.PokeBallServable
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.GlobalScope
@@ -19,14 +19,14 @@ import kotlinx.coroutines.flow.stateIn
 import javax.inject.Inject
 
 class PokeBallProvider @Inject constructor(
-    private val repo: PokemonLocalRepository,
+    private val service: PokeBallServable,
     private val fa: FirebaseAnalyticsServable,
 ): PokeBallProvidable, CoroutineScope by CoroutineScope(Dispatchers.IO)
 {
     private val _state = MutableStateFlow(emptyList<PokemonResource>())
     override val state: StateFlow<List<PokemonResource>> = _state.asStateFlow()
 
-    override val maxCapacity: Int = repo.maxCapacity
+    override val maxCapacity: Int = service.maxCapacity
 
     /**
      * ポケモンの捕獲と解放をトグル操作する
@@ -35,11 +35,11 @@ class PokeBallProvider @Inject constructor(
         val value = _state.value
         val matched = value.filter { it.name == pokemonResource.name && it.url == pokemonResource.url }
         if (matched.isEmpty()) {
-            repo.captureWithPokeBall(pokemonResource)
+            service.captureWithPokeBall(pokemonResource)
             fa.logEvent(FirebaseAnalyticsEvent.PokeBall(pokemonName = pokemonResource.name, captured = true).generated)
             async(Dispatchers.Main) { _state.value = listOf(*(value).toTypedArray(), pokemonResource) }.await()
         } else {
-            repo.releaseFromPokeBall(pokemonResource.name)
+            service.releaseFromPokeBall(pokemonResource.name)
             fa.logEvent(FirebaseAnalyticsEvent.PokeBall(pokemonName = pokemonResource.name, captured = false).generated)
             async(Dispatchers.Main) { _state.value = value.filterNot { it in matched } }.await()
         }
@@ -52,7 +52,7 @@ class PokeBallProvider @Inject constructor(
     @Composable
     override fun capturedByPokeBall(): List<PokemonResource> {
         return produceState<List<PokemonResource>>(initialValue = _state.value) {
-            _state.value = repo.getPokemonsInPokeBall()
+            _state.value = service.getPokemonsInPokeBall()
             _state.stateIn(
                 scope = GlobalScope,
                 started = SharingStarted.Eagerly,
