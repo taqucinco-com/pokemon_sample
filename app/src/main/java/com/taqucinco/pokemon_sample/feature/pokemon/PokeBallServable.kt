@@ -1,6 +1,6 @@
 package com.taqucinco.pokemon_sample.feature.pokemon
 
-interface PokemonLocalRepository {
+interface PokeBallServable {
     val maxCapacity: Int
     suspend fun getPokemonsInPokeBall(): List<PokemonResource>
     suspend fun captureWithPokeBall(pokemon: PokemonResource)
