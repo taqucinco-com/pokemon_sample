@@ -80,7 +80,7 @@ class PokeBallServiceTest {
     }
 
     @Test
-    fun testRelease() = runTest {
+    fun testRelease_Holding0Pokemons_WhenOneExist() = runTest {
 
         val mock = mock<PokeBallRepository> { }
         val service = PokeBallService(mock)
@@ -100,7 +100,7 @@ class PokeBallServiceTest {
     }
 
     @Test
-    fun testRelease_() = runTest {
+    fun testRelease_Holding0Pokemons_WhenDbInserting() = runTest {
         val repo = PokeBallRepositoryImpl(dbFactory = DatabaseFactoryImpl(context = context))
         val service = PokeBallService(repo)
 

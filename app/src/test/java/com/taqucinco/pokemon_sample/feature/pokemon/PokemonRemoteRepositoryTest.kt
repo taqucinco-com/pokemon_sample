@@ -1,5 +1,6 @@
 package com.taqucinco.pokemon_sample.feature.pokemon
 
+import com.taqucinco.pokemon_sample.error.PokemonError
 import com.taqucinco.pokemon_sample.feature.http.rest.RestClientInterface
 import kotlinx.coroutines.runBlocking
 import org.junit.Assert.*
@@ -57,6 +58,29 @@ class PokemonRemoteRepositoryTest {
         val ivysaur = response.results[1]
         assertEquals("ivysaur", ivysaur.name)
         assertEquals("https://pokeapi.co/api/v2/pokemon/2/", ivysaur.url)
+    }
+
+    @Test
+    fun testGetList_ThrowPokemonErrorFetchingFail_WhenInvalidHttpStatus() = runBlocking {
+        // 500ステータスのレスポンスを返すRestClientのモックを生成
+        val mock = mock<RestClientInterface> { }
+        val stubResponse = RestClientInterface.Response(
+            status = 500,
+            headers = mapOf("Content-Type" to "application/json; charset=utf-8"),
+            data = "".toByteArray(Charsets.UTF_8)
+        )
+        whenever(mock.get(anyOrNull(), anyOrNull(), anyOrNull())).doSuspendableAnswer {
+            return@doSuspendableAnswer stubResponse
+        }
+
+        // リストを取得する
+        val repo = PokemonRemoteRepositoryImpl(restClient = mock)
+        try {
+            repo.getList()
+            fail("should throw PokemonError.FetchingFail")
+        } catch(t: Throwable) {
+            assertTrue(t is PokemonError.FetchingFail)
+        }
     }
 
     @Test
