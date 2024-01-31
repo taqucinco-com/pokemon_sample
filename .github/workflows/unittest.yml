@@ -1,13 +1,20 @@
 name: Gradle Package
 
 on:
-  push:
+  pull_request:
     branches:
-      - develop
+      - main
     paths-ignore:
       - docs/**
       - README.md
       - LICENSE
+  # push:
+  #   branches:
+  #     - develop
+  #   paths-ignore:
+  #     - docs/**
+  #     - README.md
+  #     - LICENSE
 
 jobs:
   testrun:
@@ -22,25 +29,19 @@ jobs:
       - name: google services json
         run: |
           touch ./app/google-services.json
+          sudo chmod 777 ./app/google-services.json
           echo -e "${{ secrets.GOOGLE_SERVICES_JSON_BASE64 }}" | base64 -d >> ./app/google-services.json
 
-      - name: create local.properties
-        run: |
-          touch ./local.properties
-          echo -e "key_alias=${{ secrets.KEYSTORE_ALIAS }}" >> ./local.properties
-          echo -e "key_password=${{ secrets.KEYSTORE_PASS }}" >> ./local.properties
-          echo -e "store_password=${{ secrets.KEYSTORE_PASS }}" >> ./local.properties
-
       - name: Set up JDK 11
-        uses: docker://gradle:7.2-jdk11
+        uses: docker://gradle:8-jdk17
         with:
-          java-version: "11"
+          java-version: "17"
           distribution: "temurin"
 
       - name: Make permitted
         run: sudo chmod -R 777 ./
 
-      - uses: actions/cache@v2
+      - uses: actions/cache@v4
         with:
           path: ~/.gradle/caches
           key: ${{ runner.os }}-gradle-${{ hashFiles('**/*.gradle*') }}

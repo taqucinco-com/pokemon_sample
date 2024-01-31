@@ -54,7 +54,7 @@ sealed class PokemonApi {
         ) {
             init {
                 if (id == null && name == null) throw Exception("one of props must be non-null.")
-                if (id != null && name != null) throw Exception("both of props should not be non-nul　simultaneously.")
+                if (id != null && name != null) throw Exception("both of props should not be non-null simultaneously.")
             }
 
             fun url(): String {
