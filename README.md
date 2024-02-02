@@ -40,3 +40,8 @@
 # NOTED
 
 - gitをクローンしただけではこのプロジェクトをビルドできません。`com.taqucinco.pokemon_sample`のパッケージに対応してFAの`google-service.json`をappフォルダ以下に配置してください。
+
+# デモ
+
+https://github.com/taqucinco-com/pokemon_sample/assets/45273979/43240e50-0652-4f1b-aa8d-15aa96df326d
+
