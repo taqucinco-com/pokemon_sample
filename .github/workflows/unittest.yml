@@ -8,6 +8,13 @@ on:
       - docs/**
       - README.md
       - LICENSE
+  push:
+    tags:
+      - dispatch/**
+    paths-ignore:
+      - docs/**
+      - README.md
+      - LICENSE
   # push:
   #   branches:
   #     - develop
@@ -31,6 +38,16 @@ jobs:
           touch ./app/google-services.json
           sudo chmod 777 ./app/google-services.json
           echo -e "${{ secrets.GOOGLE_SERVICES_JSON_BASE64 }}" | base64 -d >> ./app/google-services.json
+
+      - name: java
+        uses: actions/setup-java@v4
+        with:
+          java-version: "17"
+          distribution: "temurin" # See 'Supported distributions' for available options
+
+      - name: Set up Android SDK
+        if: ${{ env.ACT }} # Only run on local act setups, as GitHub Actions provides the Android SDK on Ubuntu
+        uses: android-actions/setup-android@v2
 
       - name: Set up JDK 17
         uses: docker://gradle:8-jdk17

@@ -40,3 +40,6 @@
 # NOTED
 
 - gitをクローンしただけではこのプロジェクトをビルドできません。`com.taqucinco.pokemon_sample`のパッケージに対応してFAの`google-service.json`をappフォルダ以下に配置してください。
+- vi ~/.zshrcで```export JAVA_HOME=`/usr/libexec/java_home -v 17```を追加すればテストコマンド実行可能
+- `brew install act`でローカルでGitHub Actionsを実行できます。```act --container-architecture linux/amd64 -W .github/workflows/unittest.yml```
+- https://developer.android.com/studio/test/advanced-test-setup?hl=ja#kts
