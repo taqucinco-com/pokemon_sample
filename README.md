@@ -43,3 +43,7 @@
 - vi ~/.zshrcで```export JAVA_HOME=`/usr/libexec/java_home -v 17```を追加すればテストコマンド実行可能
 - `brew install act`でローカルでGitHub Actionsを実行できます。```act --container-architecture linux/amd64 -W .github/workflows/unittest.yml```
 - https://developer.android.com/studio/test/advanced-test-setup?hl=ja#kts
+
+# デモ
+
+https://github.com/taqucinco-com/pokemon_sample/assets/45273979/43240e50-0652-4f1b-aa8d-15aa96df326d
