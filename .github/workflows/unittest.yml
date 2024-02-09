@@ -40,7 +40,6 @@ jobs:
           echo -e "${{ secrets.GOOGLE_SERVICES_JSON_BASE64 }}" | base64 -d >> ./app/google-services.json
 
       - name: java
-        if: ${{ env.ACT }} # Only run on local act setups, as GitHub Actions provides the Android SDK on Ubuntu
         uses: actions/setup-java@v4
         with:
           java-version: "17"
@@ -50,11 +49,11 @@ jobs:
         if: ${{ env.ACT }} # Only run on local act setups, as GitHub Actions provides the Android SDK on Ubuntu
         uses: android-actions/setup-android@v2
 
-      - name: Set up JDK 17
-        uses: docker://gradle:8-jdk17
-        with:
-          java-version: "17"
-          distribution: "temurin"
+      # - name: Set up JDK 17
+      #   uses: docker://gradle:8-jdk17
+      #   with:
+      #     java-version: "17"
+      #     distribution: "temurin"
 
       - name: Make permitted
         run: sudo chmod -R 777 ./

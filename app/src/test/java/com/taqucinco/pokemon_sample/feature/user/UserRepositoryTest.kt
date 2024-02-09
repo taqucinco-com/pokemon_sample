@@ -88,9 +88,7 @@ class UserRepositoryTest {
         repo.register()
 
         // 登録済みの状態からさらに登録しようとする
-        val duplicatedRegistration = repo.register()
-
-        when (duplicatedRegistration) {
+        when (val duplicatedRegistration = repo.register()) {
             is UserRepository.RegistrationStatus.AlreadyRegistered -> {
                 // すでに登録済みのユーザーのIDが得られるか
                 assertEquals(uuidString, duplicatedRegistration.user.id.toString())
