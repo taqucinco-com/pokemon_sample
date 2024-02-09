@@ -33,7 +33,7 @@ class UserRepositoryTest {
             return context.getSharedPreferences(SharedPref.prefName, Context.MODE_PRIVATE)
         }
     }
-    val uuidString = "90beb16d-9b65-4c46-8240-de1e70fd1d47"
+    val uuidString = "00000000-0000-0000-0000-000000000000"
     private val uuidGenMock = object: UUIDGeneratable {
         override fun generate(): UUID = UUID.fromString(uuidString)
     }
@@ -74,5 +74,30 @@ class UserRepositoryTest {
         // SharedPrefにkey=SharedPref.Keys.userId value=uuidStringで永続化されたか
         val sharedPref = sharedPrefFactory.build()
         assertEquals(uuidString, sharedPref.getString(SharedPref.Keys.userId, ""))
+    }
+
+    @Test
+    fun testRegister_GetAlreadyRegisteredUser_WhenAlreadyRegistered() = runBlocking {
+        val repo = UserRepositoryImpl(
+            uuidGeneratable = uuidGenMock,
+            sharedPrefFactory = sharedPrefFactory,
+            firebaseAnalyticsService = mock<FirebaseAnalyticsServable> { }
+        )
+
+        // 新規登録があらかじめしておく
+        repo.register()
+
+        // 登録済みの状態からさらに登録しようとする
+        val duplicatedRegistration = repo.register()
+
+        when (duplicatedRegistration) {
+            is UserRepository.RegistrationStatus.AlreadyRegistered -> {
+                // すでに登録済みのユーザーのIDが得られるか
+                assertEquals(uuidString, duplicatedRegistration.user.id.toString())
+            }
+            else -> {
+                fail("should be RegistrationStatus.NewRegistration")
+            }
+        }
     }
 }
