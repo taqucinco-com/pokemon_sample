@@ -51,7 +51,12 @@ android {
             excludes += "/META-INF/{AL2.0,LGPL2.1}"
         }
     }
+    testOptions {
+        reportDir = "$rootDir/build/test-reports"
+        resultsDir = "$rootDir/build/test-results"
+    }
 }
+
 
 dependencies {
 
